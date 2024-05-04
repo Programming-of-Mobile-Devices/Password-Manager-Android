@@ -1,0 +1,42 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="org.gmele.android.safe.MainActivity">
+
+    <item
+        android:id="@+id/MIPasswords"
+        android:orderInCategory="101"
+        android:title="@string/mipassword"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/MIOpen"
+        android:orderInCategory="103"
+        android:title="Άνοιγμα"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/MISave"
+        android:orderInCategory="104"
+        android:title="Αποθήκευση"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/MISaveAs"
+        android:orderInCategory="105"
+        android:title="Αποθήκευση Ως"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/MIEncrypt"
+        android:orderInCategory="106"
+        android:title="Κρυπτογράφηση Αρχείου"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/MIDecrypt"
+        android:orderInCategory="107"
+        android:title="Αποκρυπτογράφηση Αρχείου"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/MIDestroy"
+        android:orderInCategory="108"
+        android:title="Καταστροφή Αρχείου"
+        app:showAsAction="never"/>
+
+</menu>
