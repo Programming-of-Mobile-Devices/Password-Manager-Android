@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Toolbar toolbar;
     FloatingActionButton fab;
     ListView Grid;
+    SearchView searchView;
     MyAdapter Adapter;
     HorizontalScrollView ScTitle;
     HorizontalScrollView ScMain;
@@ -72,6 +74,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Grid.setAdapter (Adapter);
         Grid.setOnItemClickListener (Adapter);
         Grid.setOnItemLongClickListener (this);
+        this.searchView = (SearchView) findViewById(R.id.search_bar);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Handle the submission of the query if needed
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText.isEmpty()) {
+                    Adapter.resetAdapter();
+                } else {
+                    Adapter.getFilter().filter(newText); // Apply the filter for non-empty queries
+                }
+                return true;
+            }
+
+        });
+
         LinearLayout ListTitle = (LinearLayout) findViewById (R.id.listtitle);
         ListTitle.setMinimumWidth (Grid.getWidth ());
         MakeScroll ();
@@ -217,6 +239,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             return true;
         }
+
+        if (id == R.id.MISearch)
+        {
+            SearchDialog PD = new SearchDialog (this);
+            PD.Show ();
+            return true;
+        }
+
+
         if (id == R.id.MISave)
         {
             if (GL.Pass1 == null || GL.Pass2 == null || GL.Pass1.equals ("") || GL.Pass2.equals (""))
@@ -233,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             else
             {
                 ShowMessage ("Αποθήκευση Αρχείου Κλειδιών", "Δεν έχει οριστεί όνομα.\nΧρησιμοποιείστε " +
-                    "την επιλογή \"Αποθήκευση Ως\"");
+                    "την επιλογή \"Αποθήκευση Τρελός\"");
             }
         }
         if (id == R.id.MISaveAs)
@@ -629,8 +660,55 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //System.out.println ("****" + NFn);
         return NFn;
     }
-}
+    public void DoSearch (String Term)
+    {
 
+    }
+}
+class SearchDialog implements Dialog.OnShowListener, Button.OnClickListener{
+    MainActivity MA;
+    AlertDialog.Builder SearchDBuilder;
+    AlertDialog SearchD;
+    EditText SearchText;
+    View DialogView;
+    Button BtOK;
+    Button BtnSearch;
+    SearchDialog(MainActivity m)
+    {
+        MA = m;
+        SearchDBuilder = new AlertDialog.Builder (MA);
+        SearchDBuilder.setTitle ("Αναζήτηση στοιχείων");
+        LayoutInflater inflater = MA.getLayoutInflater ();
+        DialogView = inflater.inflate (R.layout.search_lay, null);
+        SearchDBuilder.setView (DialogView);
+        SearchText = (EditText) DialogView.findViewById(R.id.search_view);
+        BtnSearch = (Button) DialogView.findViewById(R.id.search_button);
+        SearchDBuilder.setPositiveButton ("OK", null);
+        SearchD = SearchDBuilder.create ();
+        SearchD.setOnShowListener (this);
+        SearchD.show ();
+
+    }
+    void Show()
+    {
+        SearchD.show();
+    }
+
+
+    @Override
+    public void onShow(DialogInterface dialogInterface) {
+        BtOK = SearchD.getButton (AlertDialog.BUTTON_POSITIVE);
+        BtOK.setOnClickListener (this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view == this.BtnSearch)
+        {
+//            MA.DoSearch();
+        }
+    }
+}
 class PasswordDialog implements Dialog.OnShowListener, Button.OnClickListener
 {
     Globals GL;
@@ -824,6 +902,8 @@ class KeyRecDialog implements Dialog.OnShowListener, Button.OnClickListener
             KeyD.dismiss ();
 
         }
+
     }
+
 
 }

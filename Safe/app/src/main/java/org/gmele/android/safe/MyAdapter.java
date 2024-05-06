@@ -9,8 +9,11 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
+import java.security.Key;
 import java.util.ArrayList;
 
 
@@ -20,16 +23,18 @@ public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnIt
     Context mContext;
     MainActivity Act;
     private ArrayList<KeyRec> dataSet;
+    private ArrayList<KeyRec> originalDataSet;
     private int lastPosition;
     ViewHolder LastH;
     int OrigColor;
     int SelColor;
     int SelRow;
-
+    private Filter filter;
     public MyAdapter (ArrayList<KeyRec> data, Context context)
     {
         super (context, R.layout.list_lay, data);
         this.dataSet = data;
+        this.originalDataSet = new ArrayList<>(data);
         this.mContext = context;
         Act = (MainActivity) mContext;
         lastPosition = -1;
@@ -150,9 +155,25 @@ public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnIt
             Act.getMenuInflater ().inflate (R.menu.menu_selected, Act.MenuPos);
         }
     }
+    @Override
+    public Filter getFilter()
+    {
+        if (filter == null)
+            filter = new TermFiltering();
+
+        return filter;
+
+    }
+    public void resetAdapter() {
+        clear(); // Clear the existing dataset
+        addAll(originalDataSet); // Add the original dataset
+        notifyDataSetChanged(); // Notify the adapter of the changes
+    }
 
 
-    // View lookup cache
+
+
+
     class ViewHolder
     {
         TextView TvC1;
@@ -164,4 +185,52 @@ public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnIt
         TextView TvC7;
         TextView TvC8;
     }
+    private  class TermFiltering extends Filter{
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+
+            FilterResults results = new FilterResults();
+            String prefix = constraint.toString().toLowerCase();
+
+            if (prefix == null || prefix.length() == 0) {
+                ArrayList<KeyRec> list = new ArrayList<>(dataSet);
+                results.values = list;
+                results.count = list.size();
+            } else {
+                final ArrayList<KeyRec> list = dataSet;
+                int count = list.size();
+                final ArrayList<KeyRec> nlist = new ArrayList<>(count);
+
+                for (int i = 0; i < count; i++) {
+                    final KeyRec key = list.get(i);
+                    for (int j = 0; j < key.Fields.length; j++) { // Fix loop control variable here
+                        final String value = key.Fields[j].toLowerCase();
+                        if (value.contains(prefix)) {
+                            nlist.add(key);
+                            break; // Break after finding a match in one field
+                        }
+                    }
+                }
+                results.values = nlist;
+                results.count = nlist.size();
+            }
+            return results;
+            }
+
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            ArrayList<KeyRec> filteredList = (ArrayList<KeyRec>) filterResults.values;
+            if (filteredList != null) {
+                clear(); // Clear the existing dataset
+                addAll(filteredList); // Add the filtered results
+                notifyDataSetChanged(); // Notify the adapter of the changes
+            }
+        }
+
+    }
+
+
+
 }
+
+
