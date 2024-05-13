@@ -30,8 +30,9 @@ public class DataHandler
     DataHandler ()
     {
         KeyList.add (new KeyRec ());
-        KeyList.add (new KeyRec ());
-        KeyList.add (new KeyRec ());
+
+//        KeyList.add (new KeyRec ());
+//        KeyList.add (new KeyRec ());
         Changed = false;
 
     }
@@ -103,6 +104,17 @@ public class DataHandler
             return false;
         }
 
+    }
+
+    void AddEmptyField()
+    {
+        KeyList.add(new KeyRec());
+
+    }
+
+    void DeleteEmptyField()
+    {
+        KeyList.add(new KeyRec());
     }
 
 

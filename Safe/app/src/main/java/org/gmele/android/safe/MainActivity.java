@@ -66,8 +66,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Adapter = new MyAdapter (GL.DH.KeyList, this);
         toolbar = (Toolbar) findViewById (R.id.toolbar);
         setSupportActionBar (toolbar);
-        //fab = (FloatingActionButton) findViewById (R.id.fab);
-        //fab.setOnClickListener (this);
+        fab = (FloatingActionButton) findViewById (R.id.floating_button);
+        fab.setOnClickListener (this);
         //getSupportActionBar ().setDisplayShowHomeEnabled (true);
         //getSupportActionBar ().setIcon (R.mipmap.safe3);
         Grid = (ListView) findViewById (R.id.Grid);
@@ -160,7 +160,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         if (v == fab)
         {
-            Snackbar.make (v, "Replace with your own action", Snackbar.LENGTH_LONG).setAction ("Action", null).show ();
+            GL.DH.AddEmptyField();
+            Adapter.notifyDataSetChanged();
+//            Snackbar.make (v, "Replace with your own action", Snackbar.LENGTH_LONG).setAction ("Action", null).show ();
         }
 
     }

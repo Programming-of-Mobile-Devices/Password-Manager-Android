@@ -18,7 +18,7 @@
     <HorizontalScrollView
         android:id="@+id/ScMain"
         android:layout_width="match_parent"
-        android:layout_height="546dp"
+        android:layout_height="468dp"
         android:layout_weight="1"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp">
@@ -30,4 +30,6 @@
             android:choiceMode="singleChoice"
             android:descendantFocusability="blocksDescendants" />
     </HorizontalScrollView>
+
+
 </LinearLayout>
