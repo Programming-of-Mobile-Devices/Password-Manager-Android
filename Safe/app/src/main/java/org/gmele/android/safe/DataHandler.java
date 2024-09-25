@@ -131,6 +131,12 @@ public class DataHandler
         Changed = true;
     }
 
+    public void ShortA_Z()
+    {
+
+    }
+
+
 
     public int getRowCount ()
     {
@@ -226,4 +232,10 @@ class KeyRec
         for (int i = 0; i < 8; i++)
             Fields[i] = Fields[i].replace ("\n", "\\r");
     }
+
+    String[] getFields()
+    {
+        return Fields;
+    }
+
 }

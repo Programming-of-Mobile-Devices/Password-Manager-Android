@@ -389,6 +389,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
+        if( id== R.id.MISort)
+        {
+            Adapter.Sort();
+        }
+
         return super.onOptionsItemSelected (item);
     }
 

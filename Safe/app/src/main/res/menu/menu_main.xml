@@ -43,4 +43,10 @@
         android:title="Καταστροφή Αρχείου"
         app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/MISort"
+        android:orderInCategory="109"
+        android:title="Ταξινόμηση (ιδιοκτήτη)"
+        app:showAsAction="never"/>
+
 </menu>

@@ -12,9 +12,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
-
+import java.util.Collections;
 import java.security.Key;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 
 
 public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnItemClickListener
@@ -23,7 +25,7 @@ public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnIt
     Context mContext;
     MainActivity Act;
     private ArrayList<KeyRec> dataSet;
-    private ArrayList<KeyRec> originalDataSet;
+
     private int lastPosition;
     ViewHolder LastH;
     int OrigColor;
@@ -34,7 +36,7 @@ public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnIt
     {
         super (context, R.layout.list_lay, data);
         this.dataSet = data;
-        this.originalDataSet = new ArrayList<>(data);
+        //this.originalDataSet = new ArrayList<>(data);
         this.mContext = context;
         Act = (MainActivity) mContext;
         lastPosition = -1;
@@ -155,6 +157,14 @@ public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnIt
             Act.getMenuInflater ().inflate (R.menu.menu_selected, Act.MenuPos);
         }
     }
+
+    public void Sort()
+    {
+        Collections.sort(dataSet, (p1, p2) -> p1.getFields()[0].compareTo(p2.getFields()[0])); // Ταξινόμηση κατα το στοιχείο "ιδιοκτήτη"
+        notifyDataSetChanged();
+    }
+
+
     @Override
     public Filter getFilter()
     {
@@ -165,10 +175,9 @@ public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnIt
 
     }
     public void resetAdapter() {
-        clear(); // Clear the existing dataset
-        addAll(originalDataSet); // Add the original dataset
-        notifyDataSetChanged(); // Notify the adapter of the changes
+        getFilter().filter(""); // Reset the filter to show all data
     }
+
 
 
 
@@ -185,30 +194,29 @@ public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnIt
         TextView TvC7;
         TextView TvC8;
     }
-    private  class TermFiltering extends Filter{
+    private class TermFiltering extends Filter {
+
+        private ArrayList<KeyRec> originalList; // Temporary holder for original data during filtering
+
+        public TermFiltering() {
+            this.originalList = new ArrayList<>(dataSet); // Initialize with the full dataset
+        }
 
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-
             FilterResults results = new FilterResults();
             String prefix = constraint.toString().toLowerCase();
 
             if (prefix == null || prefix.length() == 0) {
-                ArrayList<KeyRec> list = new ArrayList<>(dataSet);
-                results.values = list;
-                results.count = list.size();
+                results.values = new ArrayList<>(originalList); // No filtering, restore original
+                results.count = originalList.size();
             } else {
-                final ArrayList<KeyRec> list = dataSet;
-                int count = list.size();
-                final ArrayList<KeyRec> nlist = new ArrayList<>(count);
-
-                for (int i = 0; i < count; i++) {
-                    final KeyRec key = list.get(i);
-                    for (int j = 0; j < key.Fields.length; j++) { // Fix loop control variable here
-                        final String value = key.Fields[j].toLowerCase();
-                        if (value.contains(prefix)) {
+                final ArrayList<KeyRec> nlist = new ArrayList<>();
+                for (KeyRec key : originalList) {
+                    for (String field : key.Fields) {
+                        if (field.toLowerCase().contains(prefix)) {
                             nlist.add(key);
-                            break; // Break after finding a match in one field
+                            break;
                         }
                     }
                 }
@@ -216,18 +224,23 @@ public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnIt
                 results.count = nlist.size();
             }
             return results;
-            }
-
-        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-            ArrayList<KeyRec> filteredList = (ArrayList<KeyRec>) filterResults.values;
-            if (filteredList != null) {
-                clear(); // Clear the existing dataset
-                addAll(filteredList); // Add the filtered results
-                notifyDataSetChanged(); // Notify the adapter of the changes
-            }
         }
 
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            dataSet.clear();
+            dataSet.addAll((ArrayList<KeyRec>) results.values);
+            notifyDataSetChanged(); // Update the list view
+        }
     }
+
+    public class CustomComparator implements Comparator<String[]> {
+    @Override
+    public int compare(String[] row1, String[] row2) {
+        return row1[0].compareTo(row2[0]);
+    }
+}
+
 
 
 
