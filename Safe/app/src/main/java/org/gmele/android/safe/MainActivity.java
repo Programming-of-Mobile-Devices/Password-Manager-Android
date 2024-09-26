@@ -24,6 +24,8 @@ import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -665,7 +667,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //System.out.println ("****" + NFn);
         return NFn;
     }
-    public void DoSearch (String Term)
+
+    // ΝΕΟ 4. Οι συναρτήσεις αναζήτησης
+    public void DoSearch (String query)
+    {
+
+    }
+
+    public void DoSearch (String query, String filter)
     {
 
     }
@@ -678,6 +687,19 @@ class SearchDialog implements Dialog.OnShowListener, Button.OnClickListener{
     View DialogView;
     Button BtOK;
     Button BtnSearch;
+
+    // ΝΕΟ 1. Φίλτρα αναζήτησης, γκρουπ με radio buttons
+    RadioGroup RGrpFilters;
+    // ΝΕΟ 2. Κουμπιά φίλτρων
+    RadioButton RBtnOwner;
+    RadioButton RBtnGeneral;
+    RadioButton RBtnSystem;
+    RadioButton RBtnObject;
+    RadioButton RBtnAccount;
+    RadioButton RBtnUsername;
+    RadioButton RBtnPassword;
+    RadioButton RBtnNotes;
+
     SearchDialog(MainActivity m)
     {
         MA = m;
@@ -688,6 +710,19 @@ class SearchDialog implements Dialog.OnShowListener, Button.OnClickListener{
         SearchDBuilder.setView (DialogView);
         SearchText = (EditText) DialogView.findViewById(R.id.search_view);
         BtnSearch = (Button) DialogView.findViewById(R.id.search_button);
+
+        // ΝΕΟ 1.1 Αρχικοποίηση του γκρουπ με τα φίλτρα αναζήτησης
+        RGrpFilters = (RadioGroup) DialogView.findViewById(R.id.filters_view);
+        // ΝΕΟ 2.1 Αρχικοποίηση των κουμπιών
+        RBtnOwner = (RadioButton) DialogView.findViewById(R.id.RBtnOwner);
+        RBtnGeneral = (RadioButton) DialogView.findViewById(R.id.RBtnGeneral);
+        RBtnSystem = (RadioButton) DialogView.findViewById(R.id.RBtnSystem);
+        RBtnObject = (RadioButton) DialogView.findViewById(R.id.RBtnObject);
+        RBtnAccount = (RadioButton) DialogView.findViewById(R.id.RBtnAccount);
+        RBtnUsername = (RadioButton) DialogView.findViewById(R.id.RBtnUsername);
+        RBtnPassword = (RadioButton) DialogView.findViewById(R.id.RBtnPassword);
+        RBtnNotes = (RadioButton) DialogView.findViewById(R.id.RBtnNotes);
+
         SearchDBuilder.setPositiveButton ("OK", null);
         SearchD = SearchDBuilder.create ();
         SearchD.setOnShowListener (this);
@@ -710,7 +745,21 @@ class SearchDialog implements Dialog.OnShowListener, Button.OnClickListener{
     public void onClick(View view) {
         if(view == this.BtnSearch)
         {
-            //MA.DoSearch();
+            // ΝΕΟ 3. Ο listener της αναζήτησης
+            int selectedId = RGrpFilters.getCheckedRadioButtonId();
+            RadioButton selectedFilter = (RadioButton) DialogView.findViewById(selectedId);
+            CharSequence queryChar = SearchText.getText();
+            String query = queryChar.toString();
+
+            if (selectedFilter != null) {
+                // ΝΕΟ 3.1 Αναζήτηση με φίλτρο
+                CharSequence filterName = selectedFilter.getText();
+                String filter = filterName.toString();
+                MA.DoSearch(query, filter);
+            } else {
+                // ΝΕΟ 3.2 Αναζήτηση χωρίς φίλτρο
+                MA.DoSearch(query);
+            }
         }
     }
 }
