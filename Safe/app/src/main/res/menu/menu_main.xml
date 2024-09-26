@@ -46,7 +46,7 @@
     <item
         android:id="@+id/MISort"
         android:orderInCategory="109"
-        android:title="Ταξινόμηση (ιδιοκτήτη)"
-        app:showAsAction="never"/>
+        android:title="Ταξινόμηση"
+        app:showAsAction="never" />
 
 </menu>

@@ -710,7 +710,7 @@ class SearchDialog implements Dialog.OnShowListener, Button.OnClickListener{
     public void onClick(View view) {
         if(view == this.BtnSearch)
         {
-//            MA.DoSearch();
+            //MA.DoSearch();
         }
     }
 }
