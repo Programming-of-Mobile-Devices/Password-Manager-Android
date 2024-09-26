@@ -21,6 +21,7 @@ import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -612,6 +613,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             .show ();
     }
 
+    // ΝΕΟ 4. Οι συναρτήσεις αναζήτησης
+    public void DoSearch (String query)
+    {
+        Adapter.resetAdapter();
+    }
+
+    public void DoSearch (String query, String filter)
+    {
+        Adapter.SearchByFilter(query);
+    }
+
     void ShowMessage (String Title, String Message)
     {
         new AlertDialog.Builder (this)
@@ -668,16 +680,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return NFn;
     }
 
-    // ΝΕΟ 4. Οι συναρτήσεις αναζήτησης
-    public void DoSearch (String query)
-    {
-
-    }
-
-    public void DoSearch (String query, String filter)
-    {
-
-    }
 }
 class SearchDialog implements Dialog.OnShowListener, Button.OnClickListener{
     MainActivity MA;

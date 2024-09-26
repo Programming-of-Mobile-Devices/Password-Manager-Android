@@ -164,12 +164,19 @@ public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnIt
         notifyDataSetChanged();
     }
 
+    // ΝΕΟ 5. Αναζήτηση με φίλτρα
+    public void SearchByFilter(CharSequence query)
+    {
+        getFilter().filter(query);
+    }
+
 
     @Override
     public Filter getFilter()
     {
         if (filter == null)
             filter = new TermFiltering();
+
 
         return filter;
 
