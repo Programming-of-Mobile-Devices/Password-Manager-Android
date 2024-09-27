@@ -131,12 +131,6 @@ public class DataHandler
         Changed = true;
     }
 
-    public void ShortA_Z()
-    {
-
-    }
-
-
 
     public int getRowCount ()
     {

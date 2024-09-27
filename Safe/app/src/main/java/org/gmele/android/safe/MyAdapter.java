@@ -18,7 +18,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 
-
+/*
+* Γενικά , Adapter στο android είναι ουσιαστικά με "γέφυρα" ανάμεσα στα αποθηκευμένα δεδομένα σε οποιοδήποτε
+* δομή δεδομένων και το πως αυτά εμφανίζονται στο χρήστη στο UI. Η κλάση ArrayAdapter που κληρονόμεί η MyAdapter
+* μπορεί να χρησιμοποιηθεί για να επιστρέφει ένα view για κάθε εγγραφή KeyRec (οπου κάθε object KeyRec αποτελείται
+* απο τα 8 πεδία πχ "ιδιοκτησία" κλπ.) .Κάθε φορά που γίνεται μία αλλαγή η κλάση MyAdapter ενημερώνεται απο την
+* mainActivity μέσω της κλήσης της συνάρτησης "notifyDataSetChanged()" . Ετσι η κλάση ξέρει πότε θα πρέπει να
+* αναδιατάξει-επεξεργαστεί τα δεδομένα(views) και αν θα τα εμφανίσει με κάποιο διαφοτερικό τρόπο π.χ. ταξινομημενα.
+* Έχουμε τέλος εισάγει και μια συνάρτηση sort η οποία παρεμβαίνει στα views και τα αναδιατάσει με κάποιο κριτήριο ταξινόμησης
+* */
 public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnItemClickListener
 {
 
@@ -31,12 +39,11 @@ public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnIt
     int OrigColor;
     int SelColor;
     int SelRow;
-    private Filter filter;
+    private Filter filter; // Η κλάση Filter θα μας βοηθήσει με το φιλτράρισμα των views με βαση term
     public MyAdapter (ArrayList<KeyRec> data, Context context)
     {
         super (context, R.layout.list_lay, data);
-        this.dataSet = data;
-        //this.originalDataSet = new ArrayList<>(data);
+        this.dataSet = data; // Πάρε της αναφορά των stored data
         this.mContext = context;
         Act = (MainActivity) mContext;
         lastPosition = -1;
@@ -64,7 +71,7 @@ public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnIt
         }
     }
 */
-
+    // Καλείται οποτε πρέπει να κάνει display νέα δεδομένα (η παραμετροποιημένα) και με την κλήση της συνάρτησης "notifyDataSetChanged()"
     @Override
     public View getView (int position, View convertView, ViewGroup parent)
     {
@@ -157,12 +164,13 @@ public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnIt
             Act.getMenuInflater ().inflate (R.menu.menu_selected, Act.MenuPos);
         }
     }
-
+    // Κάνει ταξινόμηση των "Αποθηκευμένων δεδομένων"(επειδη το dataset ειναι αναφορά) και ενημερώνει τον adapter για την αλλαγή
     public void Sort()
     {
         Collections.sort(dataSet, (p1, p2) -> p1.getFields()[0].compareTo(p2.getFields()[0])); // Ταξινόμηση κατα το στοιχείο "ιδιοκτήτη"
         notifyDataSetChanged();
     }
+
 
     // ΝΕΟ 5. Αναζήτηση με φίλτρα
     public void SearchByFilter(CharSequence query)
@@ -171,6 +179,9 @@ public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnIt
     }
 
 
+
+    // Κατασκευάζει ενα αντικείμενο της κλάσης TermFiltering αν δεν υπάρχει
+    // και το επιστρέφει με το ονομά της
     @Override
     public Filter getFilter()
     {
@@ -181,14 +192,11 @@ public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnIt
         return filter;
 
     }
+
+    // Ουσιαστικά φιλτράρει με το κενο string ετσι ώστε να πάρει ολα τα αποτελέσματα (κανει reset)
     public void resetAdapter() {
         getFilter().filter(""); // Reset the filter to show all data
     }
-
-
-
-
-
 
     class ViewHolder
     {
@@ -201,26 +209,38 @@ public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnIt
         TextView TvC7;
         TextView TvC8;
     }
+
+    /*
+    * Η κλάση Filter γενικά στο Android είναι μια "αφηρημένη" κλάση (abstract class , οποτε πρέπει να κληρονομήθει)
+    * η οποία μας βοηθάει να εφαρμόσουμε "φιλτραρίσματα" πάνω σε δεδομένα. Οι λειτουργίες της καλούνται ασύχρονα με την
+    * συνάρτηση filter().
+    * */
     private class TermFiltering extends Filter {
 
-        private ArrayList<KeyRec> originalList; // Temporary holder for original data during filtering
+        // Δημιουργούμε μεταβλητή η οποία τα δεχτεί τα αρχικά δεδομένα , ετσι ώστε οταν δεν υπάρχει όρος για αναζήτηση (κενό string "") να επιστρέψουμε στα αρχικά δεδομένα
+        private ArrayList<KeyRec> originalList;
 
         public TermFiltering() {
-            this.originalList = new ArrayList<>(dataSet); // Initialize with the full dataset
+            this.originalList = new ArrayList<>(dataSet); // δημιουργία αντιγράφου
         }
-
+        // καλείται μέσω της filtering για το φιλτράρισμα των αποτελεσμάτων
         @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            FilterResults results = new FilterResults();
-            String prefix = constraint.toString().toLowerCase();
+        /*CharSequence = readonly string(κατι σαν πίνακα χαρακτήρων πιο συγκεκριμένα) = Input του χρήστη */
+        protected FilterResults performFiltering(CharSequence constraint)  {
+            FilterResults results = new FilterResults(); // Κλάση της Filter που θα αποθηκεύσει τα φιλτραρισμένα αποτελέσματα
+            String prefix = constraint.toString().toLowerCase(); // μετατροπή charsequence -> String
 
-            if (prefix == null || prefix.length() == 0) {
-                results.values = new ArrayList<>(originalList); // No filtering, restore original
+            if (prefix == null || prefix.length() == 0) { // Κενό string "" = επιστροφή αρχικών δεδομένων
+                results.values = new ArrayList<>(originalList);
                 results.count = originalList.size();
             } else {
+                /*Δημιουργούμε την λίστα nList για να αποθηκεύσουμε τα φιλτραρισμένα αποτελέσματα και την θέτουμε ως final για να μην διαγραφτεί
+                οταν βγεί εκτος scope και να περάσουμε τα αποτελέσματα στο return
+                 */
                 final ArrayList<KeyRec> nlist = new ArrayList<>();
                 for (KeyRec key : originalList) {
                     for (String field : key.Fields) {
+                        // Για κάθε record του keyrec ελέγχουμε αν εμπεριέχεται ο όρος σε κάποιο απο τα πεδία και αν ναι τον περνάμε στην λίστα
                         if (field.toLowerCase().contains(prefix)) {
                             nlist.add(key);
                             break;
@@ -232,25 +252,21 @@ public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnIt
             }
             return results;
         }
-
+        // Τρέχει μετά τον filtering για να ενημερώσει τον adapter
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             dataSet.clear();
             dataSet.addAll((ArrayList<KeyRec>) results.values);
-            notifyDataSetChanged(); // Update the list view
+            notifyDataSetChanged();
         }
     }
 
-    public class CustomComparator implements Comparator<String[]> {
-    @Override
-    public int compare(String[] row1, String[] row2) {
-        return row1[0].compareTo(row2[0]);
-    }
-}
-
-
-
 
 }
+
+
+
+
+
 
 

@@ -69,10 +69,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Adapter = new MyAdapter (GL.DH.KeyList, this);
         toolbar = (Toolbar) findViewById (R.id.toolbar);
         setSupportActionBar (toolbar);
-        //fab = (FloatingActionButton) findViewById (R.id.fab);
-        //fab.setOnClickListener (this);
-        //getSupportActionBar ().setDisplayShowHomeEnabled (true);
-        //getSupportActionBar ().setIcon (R.mipmap.safe3);
         Grid = (ListView) findViewById (R.id.Grid);
         Grid.setAdapter (Adapter);
         Grid.setOnItemClickListener (Adapter);
@@ -81,16 +77,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                // Handle the submission of the query if needed
+
                 return false;
             }
-
+            //Οταν ο χρήστης προσθέτει ή αφαιρεί κάποιο όρο
             @Override
             public boolean onQueryTextChange(String newText) {
+                // empty string
                 if (newText.isEmpty()) {
                     Adapter.resetAdapter();
                 } else {
-                    Adapter.getFilter().filter(newText); // Apply the filter for non-empty queries
+                    // filter by term
+                    Adapter.getFilter().filter(newText);
                 }
                 return true;
             }
@@ -391,7 +389,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Adapter.notifyDataSetChanged ();
             }
         }
-
+        // Ταξινόμησε με βάση το αλφάβητο
         if( id== R.id.MISort)
         {
             Adapter.Sort();
