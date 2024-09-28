@@ -9,11 +9,6 @@
         android:title="@string/mipassword"
         app:showAsAction="never" />
     <item
-        android:id="@+id/MIPermissions"
-        android:orderInCategory="110"
-        android:title="Δικαιώματα"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/MIOpen"
         android:orderInCategory="103"
         android:title="Άνοιγμα"
