@@ -685,7 +685,7 @@ class SearchDialog implements Dialog.OnShowListener, Button.OnClickListener{
     AlertDialog SearchD;
     EditText SearchText;
     View DialogView;
-    Button BtOK;
+    Button BtnCancel;
     Button BtnSearch;
 
     // ΝΕΟ 1. Φίλτρα αναζήτησης, γκρουπ με radio buttons
@@ -709,7 +709,6 @@ class SearchDialog implements Dialog.OnShowListener, Button.OnClickListener{
         DialogView = inflater.inflate (R.layout.search_lay, null);
         SearchDBuilder.setView (DialogView);
         SearchText = (EditText) DialogView.findViewById(R.id.search_view);
-        BtnSearch = (Button) DialogView.findViewById(R.id.search_button);
 
         // ΝΕΟ 1.1 Αρχικοποίηση του γκρουπ με τα φίλτρα αναζήτησης
         RGrpFilters = (RadioGroup) DialogView.findViewById(R.id.filters_view);
@@ -723,7 +722,8 @@ class SearchDialog implements Dialog.OnShowListener, Button.OnClickListener{
         RBtnPassword = (RadioButton) DialogView.findViewById(R.id.RBtnPassword);
         RBtnNotes = (RadioButton) DialogView.findViewById(R.id.RBtnNotes);
 
-        SearchDBuilder.setPositiveButton ("OK", null);
+        SearchDBuilder.setPositiveButton("ΑΝΑΖΗΤΗΣΗ", null);
+        SearchDBuilder.setNegativeButton("ΑΚΥΡΩΣΗ", null);
         SearchD = SearchDBuilder.create ();
         SearchD.setOnShowListener (this);
         SearchD.show ();
@@ -737,8 +737,10 @@ class SearchDialog implements Dialog.OnShowListener, Button.OnClickListener{
 
     @Override
     public void onShow(DialogInterface dialogInterface) {
-        BtOK = SearchD.getButton (AlertDialog.BUTTON_POSITIVE);
-        BtOK.setOnClickListener (this);
+        BtnSearch = SearchD.getButton (AlertDialog.BUTTON_POSITIVE);
+        BtnSearch.setOnClickListener (this);
+        BtnCancel = SearchD.getButton (AlertDialog.BUTTON_NEGATIVE);
+        BtnCancel.setOnClickListener(this);
     }
 
     @Override
@@ -760,6 +762,12 @@ class SearchDialog implements Dialog.OnShowListener, Button.OnClickListener{
                 // ΝΕΟ 3.2 Αναζήτηση χωρίς φίλτρο
                 MA.DoSearch(query);
             }
+
+            SearchD.dismiss();
+        }
+        if (view == this.BtnCancel)
+        {
+            SearchD.dismiss();
         }
     }
 }

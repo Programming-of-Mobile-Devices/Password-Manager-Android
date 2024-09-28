@@ -13,22 +13,10 @@
         android:layout_height="56dp"
         android:hint="Αναζήτηση" />
 
-    <Button
-        android:id="@+id/search_button"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:text="Αναζήτηση" />
-
     <RadioGroup
         android:id="@+id/filters_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Φίλτρα αναζήτησης" />
 
         <RadioButton
             android:id="@+id/RBtnOwner"
