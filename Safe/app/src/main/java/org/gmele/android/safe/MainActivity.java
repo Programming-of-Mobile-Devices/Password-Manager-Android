@@ -83,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Grid.setAdapter (Adapter);
         Grid.setOnItemClickListener (Adapter);
         Grid.setOnItemLongClickListener (this);
+
+        // ΝΕΟ 1. Η μπάρα αναζήτησης
         this.searchView = (SearchView) findViewById(R.id.search_bar);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -93,11 +95,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //Οταν ο χρήστης προσθέτει ή αφαιρεί κάποιο όρο
             @Override
             public boolean onQueryTextChange(String newText) {
-                // empty string
                 if (newText.isEmpty()) {
                     Adapter.resetAdapter();
                 } else {
-                    // filter by term
                     Adapter.getFilter().filter(newText);
                 }
                 return true;
@@ -120,10 +120,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        // Check if permissions are granted
+        // ΝΕΟ 2. Λειτουργία που προτρέπει στον χρήστη να δώσει τα δικαιώματα πρόσβασης των αρχείων του συστήματος στην εφαρμογή
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            // Request permissions
             ActivityCompat.requestPermissions(this, new String[]{
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -132,13 +131,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    // ΝΕΟ 3. Έλεγχος για το αν έχει η εφαρμογή πρόσβαση στα δικαιώματα
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == STORAGE_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permissions granted, proceed with your logic
+                Adapter.resetAdapter();
             } else {
-                // Permissions denied, handle accordingly
+                this.ShowMessage("Δικαιώματα", "Δεν έχει η εφαρμογή πρόσβαση στα δικαιώματα");
             }
         }
     }
@@ -274,6 +274,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return true;
         }
 
+        // ΝΕΟ 4. Διεπαφή με την κλάση που διαχειρίζεται το UI της αναζήτησης
         if (id == R.id.MISearch)
         {
             SearchDialog PD = new SearchDialog (this);
@@ -422,7 +423,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Adapter.notifyDataSetChanged ();
             }
         }
-        // Ταξινόμησε με βάση το αλφάβητο
+
+        // ΝΕΟ 5. Διεπαφή με την κλάση που διαχειρίζεται το UI της ταξινόμησης
         if( id== R.id.MISort)
         {
             SortDialog SD = new SortDialog(this);
@@ -646,7 +648,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             .show ();
     }
 
-    // ΝΕΟ 4. Οι συναρτήσεις αναζήτησης
+    // ΝΕΟ 6. Οι συναρτήσεις αναζήτησης
     public void DoSearch (String query, String filter, boolean hasFilter)
     {
         if (hasFilter)
@@ -712,6 +714,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 }
+
+// ΝΕΟ 7. Η κλάση που διαχειρίζεται την αλληλεπίδραση της λειτουργιάς αναζήτησης
 class SearchDialog implements Dialog.OnShowListener, Button.OnClickListener{
     MainActivity MA;
     AlertDialog.Builder SearchDBuilder;
@@ -721,9 +725,9 @@ class SearchDialog implements Dialog.OnShowListener, Button.OnClickListener{
     Button BtnCancel;
     Button BtnSearch;
 
-    // ΝΕΟ 1. Φίλτρα αναζήτησης, γκρουπ με radio buttons
+    // ΝΕΟ 7.1 Φίλτρα αναζήτησης, γκρουπ με radio buttons
     RadioGroup RGrpFilters;
-    // ΝΕΟ 2. Κουμπιά φίλτρων
+    // ΝΕΟ 7.2 Κουμπιά φίλτρων
     RadioButton RBtnOwner;
     RadioButton RBtnGeneral;
     RadioButton RBtnSystem;
@@ -743,9 +747,9 @@ class SearchDialog implements Dialog.OnShowListener, Button.OnClickListener{
         SearchDBuilder.setView (DialogView);
         SearchText = (EditText) DialogView.findViewById(R.id.search_view);
 
-        // ΝΕΟ 1.1 Αρχικοποίηση του γκρουπ με τα φίλτρα αναζήτησης
+        // ΝΕΟ 7.3 Αρχικοποίηση του γκρουπ με τα φίλτρα αναζήτησης
         RGrpFilters = (RadioGroup) DialogView.findViewById(R.id.filters_view);
-        // ΝΕΟ 2.1 Αρχικοποίηση των κουμπιών
+        // ΝΕΟ 7.4 Αρχικοποίηση των κουμπιών
         RBtnOwner = (RadioButton) DialogView.findViewById(R.id.RBtnOwner);
         RBtnGeneral = (RadioButton) DialogView.findViewById(R.id.RBtnGeneral);
         RBtnSystem = (RadioButton) DialogView.findViewById(R.id.RBtnSystem);
@@ -780,19 +784,19 @@ class SearchDialog implements Dialog.OnShowListener, Button.OnClickListener{
     public void onClick(View view) {
         if(view == this.BtnSearch)
         {
-            // ΝΕΟ 3. Ο listener της αναζήτησης
+            // ΝΕΟ 7.5 Ο listener της αναζήτησης
             int selectedId = RGrpFilters.getCheckedRadioButtonId();
             RadioButton selectedFilter = (RadioButton) DialogView.findViewById(selectedId);
             CharSequence queryChar = SearchText.getText();
             String query = queryChar.toString();
 
             if (selectedFilter != null) {
-                // ΝΕΟ 3.1 Αναζήτηση με φίλτρο
+                // ΝΕΟ 7.6 Αναζήτηση με φίλτρο
                 CharSequence filterName = selectedFilter.getText();
                 String filter = filterName.toString();
                 MA.DoSearch(query, filter, true);
             } else {
-                // ΝΕΟ 3.2 Αναζήτηση χωρίς φίλτρο
+                // ΝΕΟ 7.7 Αναζήτηση χωρίς φίλτρο
                 MA.DoSearch(query, "", false);
             }
             MA.Adapter.notifyDataSetChanged ();
@@ -804,6 +808,7 @@ class SearchDialog implements Dialog.OnShowListener, Button.OnClickListener{
         }
     }
 }
+
 class PasswordDialog implements Dialog.OnShowListener, Button.OnClickListener
 {
     Globals GL;
@@ -994,6 +999,8 @@ class KeyRecDialog implements Dialog.OnShowListener, Button.OnClickListener {
 
     }
 }
+
+// ΝΕΟ 8. Η κλάση που διαχειρίζεται την αλληλεπίδραση της λειτουργιάς ταξινόμησης
     class SortDialog implements Dialog.OnShowListener, Button.OnClickListener{
         MainActivity MA;
         AlertDialog.Builder SortDBuilder;
@@ -1002,9 +1009,8 @@ class KeyRecDialog implements Dialog.OnShowListener, Button.OnClickListener {
         Button BtnCancel;
         Button BtnSort;
 
-        // ΝΕΟ 1. Φίλτρα αναζήτησης, γκρουπ με radio buttons
+
         RadioGroup RGrpFilters;
-        // ΝΕΟ 2. Κουμπιά φίλτρων
         RadioButton RBtnOwner;
         RadioButton RBtnGeneral;
         RadioButton RBtnSystem;
@@ -1023,9 +1029,9 @@ class KeyRecDialog implements Dialog.OnShowListener, Button.OnClickListener {
             DialogView = inflater.inflate (R.layout.sort_lay, null);
             SortDBuilder.setView (DialogView);
 
-            // ΝΕΟ 1.1 Αρχικοποίηση του γκρουπ με τα φίλτρα αναζήτησης
+
             RGrpFilters = (RadioGroup) DialogView.findViewById(R.id.filters_view);
-            // ΝΕΟ 2.1 Αρχικοποίηση των κουμπιών
+
             RBtnOwner = (RadioButton) DialogView.findViewById(R.id.RBtnOwner);
             RBtnGeneral = (RadioButton) DialogView.findViewById(R.id.RBtnGeneral);
             RBtnSystem = (RadioButton) DialogView.findViewById(R.id.RBtnSystem);
@@ -1060,7 +1066,7 @@ class KeyRecDialog implements Dialog.OnShowListener, Button.OnClickListener {
         public void onClick(View view) {
             if(view == this.BtnSort)
             {
-                // ΝΕΟ 3. Ο listener της αναζήτησης
+
                 int selectedId = RGrpFilters.getCheckedRadioButtonId();
                 RadioButton selectedFilter = (RadioButton) DialogView.findViewById(selectedId);
 

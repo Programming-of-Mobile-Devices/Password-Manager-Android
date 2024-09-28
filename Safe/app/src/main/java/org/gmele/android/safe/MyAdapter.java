@@ -75,10 +75,9 @@ public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnIt
     @Override
     public View getView (int position, View convertView, ViewGroup parent)
     {
-        // Get the data item for this position
         KeyRec dataModel = getItem (position);
-        // Check if an existing view is being reused, otherwise inflate the view
-        ViewHolder viewHolder; // view lookup cache stored in tag
+
+        ViewHolder viewHolder;
 
         final View result;
 
@@ -132,7 +131,7 @@ public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnIt
         viewHolder.TvC8.setTag (position);
 
         LastH = viewHolder;
-        // Return the completed view to render on screen
+
         return convertView;
     }
 
@@ -177,8 +176,6 @@ public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnIt
         notifyDataSetChanged();
     }
 
-
-    // ΝΕΟ 5. Αναζήτηση με φίλτρα
     public void SearchByFilter(CharSequence constraint)
     {
         getFilter().filter(constraint);
@@ -199,7 +196,7 @@ public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnIt
 
     // Ουσιαστικά φιλτράρει με το κενο string ετσι ώστε να πάρει ολα τα αποτελέσματα (κανει reset)
     public void resetAdapter() {
-        getFilter().filter(""); // Reset the filter to show all data
+        getFilter().filter("");
     }
 
     class ViewHolder
