@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+
+    <RadioGroup
+        android:id="@+id/filters_view"
+        android:layout_width="match_parent"
+        android:layout_height="395dp">
+
+        <RadioButton
+            android:id="@+id/RBtnOwner"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Ιδιοκτήτης" />
+
+        <RadioButton
+            android:id="@+id/RBtnGeneral"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Γενική Κατηγορία" />
+
+        <RadioButton
+            android:id="@+id/RBtnSystem"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Σύστημα" />
+
+        <RadioButton
+            android:id="@+id/RBtnObject"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Αντικείμενο" />
+
+        <RadioButton
+            android:id="@+id/RBtnAccount"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Λογαριασμός" />
+
+        <RadioButton
+            android:id="@+id/RBtnUsername"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Όνομα Χρήστη" />
+
+        <RadioButton
+            android:id="@+id/RBtnPassword"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Συνθηματικό" />
+
+        <RadioButton
+            android:id="@+id/RBtnNotes"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Σημειώσεις" />
+
+    </RadioGroup>
+
+</LinearLayout>

@@ -28,6 +28,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SearchView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -392,7 +393,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Ταξινόμησε με βάση το αλφάβητο
         if( id== R.id.MISort)
         {
-            Adapter.Sort();
+            SortDialog SD = new SortDialog(this);
+            SD.Show();
+            return true;
         }
 
         return super.onOptionsItemSelected (item);
@@ -612,14 +615,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     // ΝΕΟ 4. Οι συναρτήσεις αναζήτησης
-    public void DoSearch (String query)
+    public void DoSearch (String query, String filter, boolean hasFilter)
     {
-        Adapter.resetAdapter();
-    }
-
-    public void DoSearch (String query, String filter)
-    {
-        Adapter.SearchByFilter(query);
+        if (hasFilter)
+            Adapter.SearchByFilter(query + filter);
+        else
+            Adapter.SearchByFilter(query);
     }
 
     void ShowMessage (String Title, String Message)
@@ -757,12 +758,12 @@ class SearchDialog implements Dialog.OnShowListener, Button.OnClickListener{
                 // ΝΕΟ 3.1 Αναζήτηση με φίλτρο
                 CharSequence filterName = selectedFilter.getText();
                 String filter = filterName.toString();
-                MA.DoSearch(query, filter);
+                MA.DoSearch(query, filter, true);
             } else {
                 // ΝΕΟ 3.2 Αναζήτηση χωρίς φίλτρο
-                MA.DoSearch(query);
+                MA.DoSearch(query, "", false);
             }
-
+            MA.Adapter.notifyDataSetChanged ();
             SearchD.dismiss();
         }
         if (view == this.BtnCancel)
@@ -880,8 +881,7 @@ class PasswordDialog implements Dialog.OnShowListener, Button.OnClickListener
 }
 
 
-class KeyRecDialog implements Dialog.OnShowListener, Button.OnClickListener
-{
+class KeyRecDialog implements Dialog.OnShowListener, Button.OnClickListener {
     Globals GL;
     int SelRow;
     MainActivity MA;
@@ -900,72 +900,181 @@ class KeyRecDialog implements Dialog.OnShowListener, Button.OnClickListener
     Button BtCancel;
 
 
-    KeyRecDialog (MainActivity m)
-    {
-        GL = Globals.GetInstance ();
+    KeyRecDialog(MainActivity m) {
+        GL = Globals.GetInstance();
         MA = m;
         SelRow = MA.Adapter.SelRow;
-        KeyDBuilder = new AlertDialog.Builder (MA);
-        KeyDBuilder.setTitle ("Συνταξη");
-        LayoutInflater inflater = MA.getLayoutInflater ();
-        DialogView = inflater.inflate (R.layout.keyrec_lay, null);
-        KeyDBuilder.setView (DialogView);
-        EtLin1 = (EditText) DialogView.findViewById (R.id.EtLin1);
-        EtLin2 = (EditText) DialogView.findViewById (R.id.EtLin2);
-        EtLin3 = (EditText) DialogView.findViewById (R.id.EtLin3);
-        EtLin4 = (EditText) DialogView.findViewById (R.id.EtLin4);
-        EtLin5 = (EditText) DialogView.findViewById (R.id.EtLin5);
-        EtLin6 = (EditText) DialogView.findViewById (R.id.EtLin6);
-        EtLin7 = (EditText) DialogView.findViewById (R.id.EtLin7);
-        EtLin8 = (EditText) DialogView.findViewById (R.id.EtLin8);
-        KeyDBuilder.setPositiveButton ("OK", null);
-        KeyDBuilder.setNegativeButton (("Ακύρωση"), null);
-        KeyD = KeyDBuilder.create ();
-        KeyD.setOnShowListener (this);
-        KeyD.show ();
+        KeyDBuilder = new AlertDialog.Builder(MA);
+        KeyDBuilder.setTitle("Συνταξη");
+        LayoutInflater inflater = MA.getLayoutInflater();
+        DialogView = inflater.inflate(R.layout.keyrec_lay, null);
+        KeyDBuilder.setView(DialogView);
+        EtLin1 = (EditText) DialogView.findViewById(R.id.EtLin1);
+        EtLin2 = (EditText) DialogView.findViewById(R.id.EtLin2);
+        EtLin3 = (EditText) DialogView.findViewById(R.id.EtLin3);
+        EtLin4 = (EditText) DialogView.findViewById(R.id.EtLin4);
+        EtLin5 = (EditText) DialogView.findViewById(R.id.EtLin5);
+        EtLin6 = (EditText) DialogView.findViewById(R.id.EtLin6);
+        EtLin7 = (EditText) DialogView.findViewById(R.id.EtLin7);
+        EtLin8 = (EditText) DialogView.findViewById(R.id.EtLin8);
+        KeyDBuilder.setPositiveButton("OK", null);
+        KeyDBuilder.setNegativeButton(("Ακύρωση"), null);
+        KeyD = KeyDBuilder.create();
+        KeyD.setOnShowListener(this);
+        KeyD.show();
     }
 
 
     @Override
-    public void onShow (DialogInterface dialog)
-    {
-        EtLin1.setText ((String) GL.DH.getValueAt (SelRow, 0));
-        EtLin2.setText ((String) GL.DH.getValueAt (SelRow, 1));
-        EtLin3.setText ((String) GL.DH.getValueAt (SelRow, 2));
-        EtLin4.setText ((String) GL.DH.getValueAt (SelRow, 3));
-        EtLin5.setText ((String) GL.DH.getValueAt (SelRow, 4));
-        EtLin6.setText ((String) GL.DH.getValueAt (SelRow, 5));
-        EtLin7.setText ((String) GL.DH.getValueAt (SelRow, 6));
-        EtLin8.setText ((String) GL.DH.getValueAt (SelRow, 7));
-        BtOK = KeyD.getButton (AlertDialog.BUTTON_POSITIVE);
-        BtOK.setOnClickListener (this);
-        BtCancel = KeyD.getButton (AlertDialog.BUTTON_NEGATIVE);
-        BtCancel.setOnClickListener (this);
+    public void onShow(DialogInterface dialog) {
+        EtLin1.setText((String) GL.DH.getValueAt(SelRow, 0));
+        EtLin2.setText((String) GL.DH.getValueAt(SelRow, 1));
+        EtLin3.setText((String) GL.DH.getValueAt(SelRow, 2));
+        EtLin4.setText((String) GL.DH.getValueAt(SelRow, 3));
+        EtLin5.setText((String) GL.DH.getValueAt(SelRow, 4));
+        EtLin6.setText((String) GL.DH.getValueAt(SelRow, 5));
+        EtLin7.setText((String) GL.DH.getValueAt(SelRow, 6));
+        EtLin8.setText((String) GL.DH.getValueAt(SelRow, 7));
+        BtOK = KeyD.getButton(AlertDialog.BUTTON_POSITIVE);
+        BtOK.setOnClickListener(this);
+        BtCancel = KeyD.getButton(AlertDialog.BUTTON_NEGATIVE);
+        BtCancel.setOnClickListener(this);
     }
 
     @Override
-    public void onClick (View v)
-    {
-        if (v == BtOK)
-        {
-            GL.DH.setValueAt (EtLin1.getText ().toString (), SelRow, 0);
-            GL.DH.setValueAt (EtLin2.getText ().toString (), SelRow, 1);
-            GL.DH.setValueAt (EtLin3.getText ().toString (), SelRow, 2);
-            GL.DH.setValueAt (EtLin4.getText ().toString (), SelRow, 3);
-            GL.DH.setValueAt (EtLin5.getText ().toString (), SelRow, 4);
-            GL.DH.setValueAt (EtLin6.getText ().toString (), SelRow, 5);
-            GL.DH.setValueAt (EtLin7.getText ().toString (), SelRow, 6);
-            GL.DH.setValueAt (EtLin8.getText ().toString (), SelRow, 7);
-            KeyD.dismiss ();
-            MA.Adapter.notifyDataSetChanged ();
+    public void onClick(View v) {
+        if (v == BtOK) {
+            GL.DH.setValueAt(EtLin1.getText().toString(), SelRow, 0);
+            GL.DH.setValueAt(EtLin2.getText().toString(), SelRow, 1);
+            GL.DH.setValueAt(EtLin3.getText().toString(), SelRow, 2);
+            GL.DH.setValueAt(EtLin4.getText().toString(), SelRow, 3);
+            GL.DH.setValueAt(EtLin5.getText().toString(), SelRow, 4);
+            GL.DH.setValueAt(EtLin6.getText().toString(), SelRow, 5);
+            GL.DH.setValueAt(EtLin7.getText().toString(), SelRow, 6);
+            GL.DH.setValueAt(EtLin8.getText().toString(), SelRow, 7);
+            KeyD.dismiss();
+            MA.Adapter.notifyDataSetChanged();
         }
-        if (v == BtCancel)
-        {
-            KeyD.dismiss ();
+        if (v == BtCancel) {
+            KeyD.dismiss();
 
         }
 
     }
-
-
 }
+    class SortDialog implements Dialog.OnShowListener, Button.OnClickListener{
+        MainActivity MA;
+        AlertDialog.Builder SortDBuilder;
+        AlertDialog SortD;
+        View DialogView;
+        Button BtnCancel;
+        Button BtnSort;
+
+        // ΝΕΟ 1. Φίλτρα αναζήτησης, γκρουπ με radio buttons
+        RadioGroup RGrpFilters;
+        // ΝΕΟ 2. Κουμπιά φίλτρων
+        RadioButton RBtnOwner;
+        RadioButton RBtnGeneral;
+        RadioButton RBtnSystem;
+        RadioButton RBtnObject;
+        RadioButton RBtnAccount;
+        RadioButton RBtnUsername;
+        RadioButton RBtnPassword;
+        RadioButton RBtnNotes;
+
+        SortDialog(MainActivity m)
+        {
+            MA = m;
+            SortDBuilder = new AlertDialog.Builder (MA);
+            SortDBuilder.setTitle ("Ταξινόμηση στοιχείων");
+            LayoutInflater inflater = MA.getLayoutInflater ();
+            DialogView = inflater.inflate (R.layout.sort_lay, null);
+            SortDBuilder.setView (DialogView);
+
+            // ΝΕΟ 1.1 Αρχικοποίηση του γκρουπ με τα φίλτρα αναζήτησης
+            RGrpFilters = (RadioGroup) DialogView.findViewById(R.id.filters_view);
+            // ΝΕΟ 2.1 Αρχικοποίηση των κουμπιών
+            RBtnOwner = (RadioButton) DialogView.findViewById(R.id.RBtnOwner);
+            RBtnGeneral = (RadioButton) DialogView.findViewById(R.id.RBtnGeneral);
+            RBtnSystem = (RadioButton) DialogView.findViewById(R.id.RBtnSystem);
+            RBtnObject = (RadioButton) DialogView.findViewById(R.id.RBtnObject);
+            RBtnAccount = (RadioButton) DialogView.findViewById(R.id.RBtnAccount);
+            RBtnUsername = (RadioButton) DialogView.findViewById(R.id.RBtnUsername);
+            RBtnPassword = (RadioButton) DialogView.findViewById(R.id.RBtnPassword);
+            RBtnNotes = (RadioButton) DialogView.findViewById(R.id.RBtnNotes);
+
+            SortDBuilder.setPositiveButton("ΤΑΞΙΝΟΜΗΣΗ", null);
+            SortDBuilder.setNegativeButton("ΑΚΥΡΩΣΗ", null);
+            SortD = SortDBuilder.create ();
+            SortD.setOnShowListener (this);
+            SortD.show ();
+
+        }
+        void Show()
+        {
+            SortD.show();
+        }
+
+
+        @Override
+        public void onShow(DialogInterface dialogInterface) {
+            BtnSort = SortD.getButton (AlertDialog.BUTTON_POSITIVE);
+            BtnSort.setOnClickListener (this);
+            BtnCancel = SortD.getButton (AlertDialog.BUTTON_NEGATIVE);
+            BtnCancel.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            if(view == this.BtnSort)
+            {
+                // ΝΕΟ 3. Ο listener της αναζήτησης
+                int selectedId = RGrpFilters.getCheckedRadioButtonId();
+                RadioButton selectedFilter = (RadioButton) DialogView.findViewById(selectedId);
+
+                if (selectedFilter == null)
+                {
+                    MA.Adapter.Sort();
+                }
+                else
+                {
+                    CharSequence nameFilter = selectedFilter.getText();
+                    switch(nameFilter.toString())
+                    {
+                        case "Ιδιοκτήτης":
+                            MA.Adapter.Sort(0);
+                            break;
+                        case "Γενική κατηγορία":
+                            MA.Adapter.Sort(1);
+                            break;
+                        case "Σύστημα":
+                            MA.Adapter.Sort(2);
+                            break;
+                        case "Αντικείμενο":
+                            MA.Adapter.Sort(3);
+                            break;
+                        case "Λογαριασμός":
+                            MA.Adapter.Sort(4);
+                            break;
+                        case "Όνομα Χρήστη":
+                            MA.Adapter.Sort(5);
+                            break;
+                        case "Συνθηματικό":
+                            MA.Adapter.Sort(6);
+                            break;
+                        case "Σημειώσεις":
+                            MA.Adapter.Sort(7);
+                            break;
+
+                    }
+                }
+
+                MA.Adapter.notifyDataSetChanged ();
+                SortD.dismiss();
+            }
+            if (view == this.BtnCancel)
+            {
+                SortD.dismiss();
+            }
+        }
+    }

@@ -171,14 +171,18 @@ public class MyAdapter extends ArrayAdapter<KeyRec> implements  AdapterView.OnIt
         notifyDataSetChanged();
     }
 
-
-    // ΝΕΟ 5. Αναζήτηση με φίλτρα
-    public void SearchByFilter(CharSequence query)
+    public void Sort(int filterId)
     {
-        getFilter().filter(query);
+        Collections.sort(dataSet, (p1, p2) -> p1.getFields()[filterId].compareTo(p2.getFields()[filterId])); // Ταξινόμηση κατα το στοιχείο "ιδιοκτήτη"
+        notifyDataSetChanged();
     }
 
 
+    // ΝΕΟ 5. Αναζήτηση με φίλτρα
+    public void SearchByFilter(CharSequence constraint)
+    {
+        getFilter().filter(constraint);
+    }
 
     // Κατασκευάζει ενα αντικείμενο της κλάσης TermFiltering αν δεν υπάρχει
     // και το επιστρέφει με το ονομά της
