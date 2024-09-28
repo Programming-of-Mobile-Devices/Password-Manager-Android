@@ -4,19 +4,24 @@
       tools:context="org.gmele.android.safe.MainActivity">
 
     <item
-        android:id="@+id/MISearch"
-        android:title="Αναζήτηση"
-        app:actionViewClass="android.widget.SearchView" />
-    <item
         android:id="@+id/MIPasswords"
         android:orderInCategory="101"
         android:title="@string/mipassword"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/MIPermissions"
+        android:orderInCategory="110"
+        android:title="Δικαιώματα"
+        app:showAsAction="never" />
     <item
         android:id="@+id/MIOpen"
         android:orderInCategory="103"
         android:title="Άνοιγμα"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/MISearch"
+        android:title="Αναζήτηση"
+        app:actionViewClass="android.widget.SearchView" />
     <item
         android:id="@+id/MISave"
         android:orderInCategory="104"

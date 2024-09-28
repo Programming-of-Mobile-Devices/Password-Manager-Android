@@ -1,13 +1,18 @@
 package org.gmele.android.safe;
 
+import android.Manifest;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -43,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     final int ReqEncrypt = 2;
     final int ReqDecrypt = 3;
     final int ReqOpen = 4;
+
+    private static final int STORAGE_PERMISSION_CODE = 101;
+
     Globals GL;
     String Source;
     String Dest;
@@ -55,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     HorizontalScrollView ScMain;
     View Touched;
     Menu MenuPos;
+
 
     @Override
     protected void onCreate (Bundle savedInstanceState)
@@ -110,7 +119,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
+
+        // Check if permissions are granted
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // Request permissions
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            }, STORAGE_PERMISSION_CODE);
+        }
+
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == STORAGE_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permissions granted, proceed with your logic
+            } else {
+                // Permissions denied, handle accordingly
+            }
+        }
+    }
+
 
     @Override
     protected void onDestroy ()
@@ -226,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             {
                                 startActivityForResult (Intent.createChooser(intent, "Select a File to Open"), 0);
                             }
-                            catch (android.content.ActivityNotFoundException ex)
+                            catch (ActivityNotFoundException ex)
                             {
                                 // Potentially direct the user to the Market with a Dialog
                                 Toast.makeText (MainActivity.this, "Please install a File Manager.", Toast.LENGTH_SHORT).show();
