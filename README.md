@@ -60,7 +60,7 @@ This Password Manager application includes the following features:
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/Programming-of-Mobile-Devices/Password-Manager-Android.git
-cd PasswordManager
+cd Password-Manager-Android
 ```
 
 ![Flag](https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_Greece.svg/255px-Flag_of_Greece.svg.png)
@@ -126,5 +126,5 @@ cd PasswordManager
 ### 1. Κλωνοποίηση του Αποθετηρίου
 ```bash
 git clone https://github.com/Programming-of-Mobile-Devices/Password-Manager-Android.git
-cd PasswordManager
+cd Password-Manager-Android
 ```
