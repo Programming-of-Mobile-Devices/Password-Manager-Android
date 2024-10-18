@@ -14,7 +14,7 @@ This project is a **Password Manager** application developed for Android mobile 
 ---
 
 ## Course Information
-- **Course**: Technology and Programming of Mobile Devices
+- **Course**: [Technology and Programming of Mobile Devices](https://ice.uniwa.gr/education/undergraduate/courses/technology-and-programming-of-mobile-devices/)
 - **Semester**: 7/9
 - **Program**: [UNIWA](https://www.uniwa.gr/)
 - **Department**: [Informatics and Computer Engineering](https://ice.uniwa.gr/)
@@ -80,7 +80,7 @@ cd Password-Manager-Android
 
 ## Πληροφορίες Μαθήματος
 
-- **Μάθημα**: Τεχνολογία και Προγραμματισμός Κινητών Συσκευών  
+- **Μάθημα**: [Τεχνολογία και Προγραμματισμός Κινητών Συσκευών](https://ice.uniwa.gr/education/undergraduate/courses/technology-and-programming-of-mobile-devices/)  
 - **Εξάμηνο**: 7/9  
 - **Πρόγραμμα Σπουδών**: [ΠΑΔΑ](https://www.uniwa.gr/)  
 - **Τμήμα**: [Μηχανικών Πληροφορικής και Υπολογιστών](https://ice.uniwa.gr/)  
