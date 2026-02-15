@@ -44,7 +44,15 @@
 </p>
 
 <p align="center">
-  Supervisor: Georgios Meletiou, Laboratory Teaching Staff<br>
+  Supervisor: Nikitas Karanikolas, Profesor<br>
+</p>
+
+<p align="center">
+  <a href="https://ice.uniwa.gr/en/emd_person/nikitas-karanikolas/" target="_blank">UNIWA Profile</a>
+</p>
+
+<p align="center">
+  Co-supervisor: Georgios Meletiou, Laboratory Teaching Staff<br>
 </p>
 
 <p align="center">
